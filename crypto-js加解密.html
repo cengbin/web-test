@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.2.0/crypto-js.min.js"></script>
+<script>
+  const keyStr = 'p-sandy-password'
+  const key = CryptoJS.enc.Utf8.parse(keyStr)
+  const mode = CryptoJS.mode.ECB
+  const padding = CryptoJS.pad.Pkcs7
+
+  // 加密
+  function encrypt(txt) {
+    const time = Date.now();
+    const data = CryptoJS.enc.Utf8.parse(time + txt)
+    const encrypted = CryptoJS.AES.encrypt(data, key, {mode, padding})
+    return encrypted.toString()
+  }
+
+  // 解密
+  function decrypt(txt) {
+    let decrypted = CryptoJS.AES.decrypt(txt, key, {mode, padding})
+    return decrypted.toString(CryptoJS.enc.Utf8).substring(13)
+  }
+
+  let text = 'Abc123123.';
+  let encryptText = encrypt(text)
+  let decryptText = decrypt(encryptText)
+
+  console.log("text=", text)
+  console.log("encryptText=", encryptText)
+  console.log("decryptText=", decryptText)
+</script>
+</body>
+</html>
