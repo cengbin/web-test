@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title></title>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.3.0/crypto-js.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jsencrypt/3.3.2/jsencrypt.js" integrity="sha512-fKBMJxuNzI6qCC+nxxE9hqcQBFNH39VYP6FtBZOBI9UHHdX+/sNuS9jxIuf6URPmGGCQpAR/xOxCMgMy3VQG/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<textarea name="" id="data" cols="30" rows="10"></textarea>
+<button onclick="decode()">解密</button>
+<script>
+  function decode(){
+    var data = document.getElementById('data').value;
+    // console.log(data)
+
+    // Skey = CryptoJS.lib.WordArray.random(8).toString();
+    // IV = CryptoJS.enc.Utf8.parse(Skey);
+    // aesConfig = {
+    //   mode: CryptoJS.mode.ECB,
+    //   padding: CryptoJS.pad.Pkcs7
+    // }
+    //
+    // let decodeData = CryptoJS.AES.decrypt(data, IV, aesConfig).toString(CryptoJS.enc.Utf8)
+    // console.log(decodeData)
+
+    const BC = new BSTencode();
+    console.log(BC.decode(data))
+  }
+
+  class BSTencode {
+    constructor() {
+      this.Skey = CryptoJS.lib.WordArray.random(8).toString();
+      this.IV = CryptoJS.enc.Utf8.parse(this.Skey);
+      this.aesConfig = {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7
+      }
+    }
+    aesEncrypt(data) {
+      try {
+        return CryptoJS.enc.Base64.stringify(CryptoJS.AES.encrypt(JSON.stringify(data), this.IV, this.aesConfig).ciphertext)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    aesDecrypt(data) {
+      try {
+        return CryptoJS.AES.decrypt(data, this.IV, this.aesConfig).toString(CryptoJS.enc.Utf8)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    rsaEncrypt(key) {
+      try {
+        let a = new JSEncrypt(),
+          r
+        a.setPublicKey(PUBLIC_KEY), r = a.encrypt(key)
+        return r
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    rsaDecrypt(key) {
+      try {
+        let decrypt = new JSEncrypt()
+        decrypt.setPrivateKey(PRIVATE_KEY)
+        var decryptMsg = decrypt.decrypt(key)
+        return decryptMsg
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    encode(data) {
+      let
+        encryptBody = this.aesEncrypt(data),
+        encryptKey = this.rsaEncrypt(this.Skey);
+      return {
+        encryptKey,
+        data: encryptBody
+      }
+    }
+    decode(data) {
+      let newBody = this.aesDecrypt(data)
+      return newBody ? JSON.parse(newBody) : newBody
+    }
+  }
+</script>
+</body>
+</html>
