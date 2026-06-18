@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #test {
+            margin: 100px 0 0 100px;
+            width: 120px;
+            height: 120px;
+            background-color: red;
+        }
+    </style>
+</head>
+<body>
+<div id="test"></div>
+<script>
+  window.onload = function () {
+    var test = document.getElementById('test');
+    /**
+     * getBoundingClientRect 介绍
+     * 返回元素相对于**视口（viewport）**的位置和尺寸信息，返回一个 DOMRect 对象。
+     * {
+     *   top:    元素顶边距视口顶部的距离
+     *   bottom: 元素底边距视口顶部的距离
+     *   left:   元素左边距视口左侧的距离
+     *   right:  元素右边距视口左侧的距离
+     *   width:  元素宽度
+     *   height: 元素高度
+     *   x:      同 left
+     *   y:      同 top
+     * }
+     * */
+    var rect = test.getBoundingClientRect();
+    console.log(rect);
+  }
+</script>
+</body>
+</html>
